@@ -1,9 +1,9 @@
-﻿using Common.Infrastructure;
+﻿using Common.Persistence;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories
+namespace Persistence.Repositories
 {
 	public class SchoolRepository : RepositoryBase<School>, ISchoolRepository
 	{

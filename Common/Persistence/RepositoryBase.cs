@@ -1,7 +1,7 @@
 ﻿using Common.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace Common.Infrastructure
+namespace Common.Persistence
 {
 	public class RepositoryBase<T> : IRepository<T> where T : Entity
 	{

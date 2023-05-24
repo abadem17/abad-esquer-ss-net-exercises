@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Mappings
+namespace Persistence.Mappings
 {
 	public class SchoolConfig : IEntityTypeConfiguration<School>
 	{
