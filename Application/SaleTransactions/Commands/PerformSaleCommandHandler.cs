@@ -1,4 +1,5 @@
 ﻿using Common.CQRS;
+using Common.Exceptions;
 using Common.Persistence;
 using Domain.Entities;
 
@@ -16,15 +17,20 @@ namespace Application.SaleTransactions.Commands
 		public async Task Handle(PerformSaleCommand request, CancellationToken cancellationToken)
 		{
 			var taxRate = 0.16m;
-			var products = new List<Product>();
-			var transaction = new SaleTransaction()
+			var productIds = request.Items.Select(x => x.Id).ToList();
+			var productRecords = _repository.Query<Product>().Where(x => productIds.Contains(x.Id)).ToList();
+			var transaction = new SaleTransaction
 			{
 				Date = DateTime.Now,
 				Deleted = false,
 				PaymentMethodType = request.PaymentMethodType,
 				TransactionItems = request.Items.Select(x =>
 				{
-					var product = products.FirstOrDefault(p => p.Id == x.Id);
+					var product = productRecords.FirstOrDefault(p => p.Id == x.Id);
+					if (product == null)
+					{
+						throw new HttpBadResquestException("Invalid product");
+					}
 					return new TransactionItem
 					{
 						Deleted = false,

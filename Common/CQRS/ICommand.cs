@@ -6,7 +6,7 @@ namespace Common.CQRS
     {
     }
 
-    public interface ICommand : IRequest
+    public interface ICommand : ICommand<Unit>, IRequest
     {
     }
 }
