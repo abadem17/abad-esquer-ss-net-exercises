@@ -5,6 +5,7 @@ using Persistence;
 using Application;
 using Microsoft.EntityFrameworkCore;
 using Common.Exceptions;
+using Common.Persistence;
 
 var applicationAssembly = typeof(ApplicationEmptyClass).Assembly;
 var persistenceAssembly = typeof(AppDbContext).Assembly;
@@ -29,22 +30,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 	var sqlConnectionString = configuration.GetConnectionString("PostgreSqlConnection");
 	options.UseNpgsql(sqlConnectionString, x => x.MigrationsAssembly(persistenceAssembly.FullName));
 });
-builder.Services.AddTransient<DbContext>(x => x.GetRequiredService<AppDbContext>());
+builder.Services.AddTransient<IRepository, EfRepository<AppDbContext>>();
+builder.Services.AddTransient<IReadOnlyRepository, ReadOnlyEfRepository<AppDbContext>>();
 builder.Services.AddTransient<AppDbContextMigrator>();
 builder.Services.AddTransient<AppDbInitializer>();
-
-// Add persistance repositories by convention
-persistenceAssembly.ExportedTypes
-	.Where(x => !x.IsAbstract && !x.IsInterface && x.Name.EndsWith("Repository"))
-	.ToList()
-	.ForEach(repository =>
-	{
-		var @interface = repository.GetInterface("I" + repository.Name);
-		if (@interface != null)
-		{
-			builder.Services.AddTransient(@interface, repository);
-		}
-	});
 
 // Add application services by convention
 applicationAssembly.ExportedTypes

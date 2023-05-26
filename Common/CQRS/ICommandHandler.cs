@@ -6,4 +6,8 @@ namespace Common.CQRS
         where TCommand : ICommand<TResponse>
     {
     }
+    public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand>
+       where TCommand : ICommand
+    {
+    }
 }
