@@ -3,8 +3,7 @@ using Common.CQRS;
 
 namespace Application.SaleTransactions.Queries
 {
-	public class GetMonthSalesQuery : IQuery<List<SaleInfoModel>>
+	public class GetYearSalesReportQuery : IQuery<List<SalesForMonthModel>>
 	{
-		public int Year { get; set; }
 	}
 }
