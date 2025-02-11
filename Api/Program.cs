@@ -6,12 +6,33 @@ using Application;
 using Microsoft.EntityFrameworkCore;
 using Common.Exceptions;
 using Common.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Application.Security;
+
 
 var applicationAssembly = typeof(ApplicationEmptyClass).Assembly;
 var persistenceAssembly = typeof(AppDbContext).Assembly;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
-
+// Configurar JWT
+var secretKey = Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = configuration["JwtSettings:Issuer"],
+            ValidAudience = configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(secretKey)
+        };
+    });
+builder.Services.AddSingleton<JwtService>();
 // Add MVC
 builder.Services.AddControllers();
 
@@ -60,6 +81,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

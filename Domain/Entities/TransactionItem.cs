@@ -10,7 +10,6 @@ namespace Domain.Entities
 		public decimal UnitPrice { get; set; }
 		public decimal Discount { get; set; }
 		public decimal Tax { get; set; }
-
 		public virtual SaleTransaction SaleTransaction { get; set; } = null!;
 		public virtual Product Product { get; set; } = null!;
 	}

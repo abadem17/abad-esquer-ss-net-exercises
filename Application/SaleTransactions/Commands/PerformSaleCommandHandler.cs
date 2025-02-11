@@ -21,7 +21,7 @@ namespace Application.SaleTransactions.Commands
 			var productRecords = _repository.Query<Product>().Where(x => productIds.Contains(x.Id)).ToList();
 			var transaction = new SaleTransaction
 			{
-				Date = DateTime.Now,
+				Date = DateTime.UtcNow,
 				Deleted = false,
 				PaymentMethodType = request.PaymentMethodType,
 				TransactionItems = request.Items.Select(x =>
